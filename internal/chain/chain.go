@@ -41,7 +41,7 @@ func New(n int, d string) *Chain {
 // Analyze reads a file and returns a chain which contains
 // probabilities corresponding to n characters followed by
 // another one.
-func Analyze(path string, n int) (c *Chain) {
+func Analyze(path string, n int, bufS int) (c *Chain) {
 	c = New(n, path+"-mc")
 	file, err := os.Open(path)
 	if err != nil {
@@ -49,7 +49,7 @@ func Analyze(path string, n int) (c *Chain) {
 		panic(err)
 	}
 	defer file.Close()
-	buf := make([]byte, 1024*256)
+	buf := make([]byte, bufS)
 	state := 0
 	read := 0
 	go update(&read)
