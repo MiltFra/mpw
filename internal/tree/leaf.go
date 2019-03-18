@@ -40,6 +40,15 @@ func (l *leaf) Insert(v map[int][]int, wg *sync.WaitGroup) node {
 	return l
 }
 
+func (l *leaf) SetKeys(keys [][]int) {
+	if len(keys) != 1 || len(keys[0]) != 2 {
+		out.Error("Only exactly 2 keys can be set to a leaf")
+		return
+	}
+
+	l.keys = [2]int{keys[0][0], keys[0][1]}
+}
+
 func (l *leaf) Split(v map[int][]int, wg *sync.WaitGroup) node {
 	defer os.Remove(l.f)
 	defer wg.Done()

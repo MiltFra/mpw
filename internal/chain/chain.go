@@ -1,6 +1,7 @@
 package chain
 
 import (
+	"encoding/gob"
 	"fmt"
 	"io"
 	"os"
@@ -84,6 +85,47 @@ func Analyze(path string, n int, bufS int) (c *Chain) {
 	}
 	read = -1
 	out.Status("Reading file complete.")
+	return
+}
+
+type meta struct {
+	N int
+}
+
+func (c *Chain) writeMeta() {
+	p := c.path + "/meta"
+	if _, err := os.Stat(p); os.IsNotExist(err) {
+		os.Create(p)
+	}
+	w, err := os.OpenFile(p, os.O_WRONLY, os.ModeExclusive)
+	defer w.Close()
+	if err != nil {
+		out.Error("Could not write to a file. (" + p + ")")
+		panic(err)
+	}
+	encoder := gob.NewEncoder(w)
+	err = encoder.Encode(meta{c.N})
+	if err != nil {
+		out.Error("Could not encode a map to a file.")
+		panic(err)
+	}
+	out.Status("Successfully wrote to (" + p + ")")
+}
+
+func readMeta(p string) *Chain {
+	r, err := os.Open(p)
+	defer r.Close()
+	if err != nil {
+		out.Error("Could not read from a file. (" + p + ")")
+		panic(err)
+	}
+	decoder := gob.NewDecoder(r)
+	var m meta
+	err = decoder.Decode(&m)
+	if err != nil {
+		out.Error("Could not decode file.")
+		panic(err)
+	}
 	return
 }
 
