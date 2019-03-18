@@ -18,6 +18,9 @@ func GetPower(exp int) int {
 // ExtendState appends a character c to a state p with
 // a depth n.
 func ExtendState(n, p, s int) int {
+	if s == 0 {
+		return 0
+	}
 	return (p%GetPower(n-1))*95 + s
 }
 

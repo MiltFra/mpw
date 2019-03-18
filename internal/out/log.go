@@ -4,7 +4,7 @@ import "fmt"
 
 var (
 	// Level is the current LogLevel.
-	Level = 0
+	Level = 2
 	// LvlMute is the minimum LogLevel to Mute all messages.
 	LvlMute = 3
 	// LvlError is the maximum LogLevel to receive error messages.

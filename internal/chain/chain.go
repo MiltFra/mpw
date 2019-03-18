@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"time"
 
 	"github.com/miltfra/markov/internal"
 	"github.com/miltfra/markov/internal/out"
@@ -48,12 +49,16 @@ func Analyze(path string, n int) (c *Chain) {
 		panic(err)
 	}
 	defer file.Close()
-	buf := make([]byte, 1024*1024)
+	buf := make([]byte, 1024*256)
 	state := 0
+	read := 0
+	go update(&read)
+	var dct map[int][]int
 	for {
-		dct := make(map[int][]int)
+		dct = make(map[int][]int)
 		count, err := file.Read(buf)
 		if count > 0 {
+			read += count
 			out.Status(fmt.Sprintf("Read %v bytes; processing...", count))
 			actBuf := buf[:count]
 			for _, s := range actBuf {
@@ -62,7 +67,7 @@ func Analyze(path string, n int) (c *Chain) {
 					s = 0
 				}
 				if dct[state] == nil {
-					dct[state] = make([]int, 95)
+					dct[state] = make([]int, 96)
 				}
 				dct[state][s]++
 				state = internal.ExtendState(n, state, int(s))
@@ -77,8 +82,16 @@ func Analyze(path string, n int) (c *Chain) {
 			break
 		}
 	}
+	read = -1
 	out.Status("Reading file complete.")
 	return
+}
+
+func update(b *int) {
+	for *b != -1 {
+		out.Status(fmt.Sprintf("[STA] Read %v bytes\r", *b))
+		time.Sleep(1 * time.Second)
+	}
 }
 
 // Finalize converts the occurences into probabilities thus

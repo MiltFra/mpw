@@ -26,7 +26,7 @@ func New(n int, d string) *Tree {
 	internal.ResetDir(d)
 	a := 0
 	b := internal.GetPower(n) + 1
-	t := &Tree{nil, 1000, d}
+	t := &Tree{nil, 100000, d}
 	r := newLeaf(t, nil, a, b)
 	t.root = r
 	return t
