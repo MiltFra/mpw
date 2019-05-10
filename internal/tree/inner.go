@@ -39,24 +39,26 @@ func (in *inner) Insert(v map[int][]int, wg *sync.WaitGroup) node {
 
 func (in *inner) SetKeys(keys [][]int) {
 	if len(keys) < 2 {
-		out.Error("At least two pairs of keys need to be set to a leaf.")
+		out.Error("At least two pairs of keys need to be set to an inner node.")
 		return
 	}
 	center := len(keys) / 2
 	in.keys = [3]int{keys[0][0], keys[center][0], keys[len(keys)-1][1]}
 	var l, r node
-	if center == 1 {
+	if len(keys[:center]) < 2 {
 		l = newLeaf(in.T, in, keys[0]...)
 	} else {
 		l = newInner(in.T, 0, 0, 0)
 		l.SetKeys(keys[:center])
 	}
-	if len(keys) == 2 {
+	if len(keys[center:]) < 2 {
 		r = newLeaf(in.T, in, keys[1]...)
 	} else {
 		r = newInner(in.T, 0, 0, 0)
 		r.SetKeys(keys[center:])
 	}
+	in.r = r
+	in.l = l
 }
 
 func (in *inner) Values(state int) []int {

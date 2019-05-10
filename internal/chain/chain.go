@@ -4,7 +4,9 @@ import (
 	"encoding/gob"
 	"fmt"
 	"io"
+	"math/rand"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/miltfra/markov/internal"
@@ -53,14 +55,16 @@ func Analyze(path string, n int, bufS int) (c *Chain) {
 	buf := make([]byte, bufS)
 	state := 0
 	read := 0
-	go update(&read)
+	c.writeMeta()
+	f, err := os.Stat(path)
+	go update(&read, float64(f.Size()))
 	var dct map[int][]int
 	for {
 		dct = make(map[int][]int)
 		count, err := file.Read(buf)
 		if count > 0 {
 			read += count
-			out.Status(fmt.Sprintf("Read %v bytes; processing...", count))
+			//out.Status(fmt.Sprintf("Read %v bytes; processing...", count))
 			actBuf := buf[:count]
 			for _, s := range actBuf {
 				s -= 31
@@ -85,7 +89,74 @@ func Analyze(path string, n int, bufS int) (c *Chain) {
 	}
 	read = -1
 	out.Status("Reading file complete.")
+	// TODO: Write meta to disk
 	return
+}
+
+// Generate loads a markov chain and uses the probability
+// distribution to generate a number of strings in a
+// certain size intervall. To not interfere with the
+// randomness strings are discarded until the match the
+// length that was given. Thus it might take a while to
+// get a big number of fitting strings.
+func Generate(meta string, l0, l1, count int) {
+	c := readMeta(meta)
+	rand.Seed(time.Now().UTC().UnixNano())
+	for i := 0; i < count; i++ {
+		fmt.Println(c.randomWord(l0, l1))
+	}
+}
+
+func (c *Chain) randomWord(l0, l1 int) string {
+	cha := c.randomCandidate()
+	for len(cha) < l0 || len(cha) >= l1 {
+		cha = c.randomCandidate()
+	}
+	return arrToString(cha)
+}
+
+func arrToString(arr []int) string {
+	s := ""
+	for _, v := range arr {
+		s += string(v)
+	}
+	return s
+}
+
+func (c *Chain) randomCandidate() []int {
+	/* TODO: Reuse the byte array and discard the candidates in the same function.*/
+	candidate := make([]int, 0, 20)
+	state := 0
+	cha := c.randomSymbol(state)
+	state = internal.ExtendState(c.N, state, cha)
+	candidate = append(candidate, cha+31)
+	for state != 0 {
+		cha = c.randomSymbol(state)
+		state = internal.ExtendState(c.N, state, cha)
+		candidate = append(candidate, cha+31)
+	}
+	return candidate
+}
+
+func (c *Chain) randomSymbol(state int) int {
+	return weightedCoinflip(c.values.Values(state))
+}
+
+func weightedCoinflip(values []int) int {
+	s := 0
+	for _, v := range values {
+		s += v
+	}
+	if s > 0 {
+		r := rand.Intn(s)
+		for i, v := range values {
+			r -= v
+			if r < 0 {
+				return i
+			}
+		}
+	}
+	return 0
 }
 
 type meta struct {
@@ -126,18 +197,14 @@ func readMeta(p string) *Chain {
 		out.Error("Could not decode file.")
 		panic(err)
 	}
-	return
+	split := strings.Split(p, "/")
+	d := strings.Join(split[:len(split)-1], "/")
+	return &Chain{m.N, d, tree.Load(m.N, d), false}
 }
 
-func update(b *int) {
+func update(b *int, size float64) {
 	for *b != -1 {
-		out.Status(fmt.Sprintf("[STA] Read %v bytes\r", *b))
+		fmt.Printf("Read %v bytes (%v%v)        \r", *b, float64(*b)*100/size, "%")
 		time.Sleep(1 * time.Second)
 	}
-}
-
-// Finalize converts the occurences into probabilities thus
-// making the chain unable to be edited.
-func (c *Chain) Finalize() {
-
 }

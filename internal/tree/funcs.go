@@ -30,7 +30,7 @@ func writeToFile(v map[int][]int, p string) {
 		out.Error("Could not encode a map to a file.")
 		panic(err)
 	}
-	out.Status("Successfully wrote to (" + p + ")")
+	//out.Status("Successfully wrote to (" + p + ")")
 }
 
 // readFromFile reads a map from a given file

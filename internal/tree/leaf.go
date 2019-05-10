@@ -49,6 +49,10 @@ func (l *leaf) SetKeys(keys [][]int) {
 	l.keys = [2]int{keys[0][0], keys[0][1]}
 }
 
+// Split is called when the key count in the leaf exceeds a certain
+// limit. Split then separates two equally big parts of the values
+// and puts them into two different leaves. Then the leaf replaces
+// itself with an inner node in the tree.
 func (l *leaf) Split(v map[int][]int, wg *sync.WaitGroup) node {
 	defer os.Remove(l.f)
 	defer wg.Done()
@@ -67,6 +71,7 @@ func (l *leaf) Split(v map[int][]int, wg *sync.WaitGroup) node {
 		l.keys[1],
 	}
 	node := newInner(l.T, keys...)
+	// TODO:  Reuse this leaf object instead of allocating memory for a new one
 	nodeL := newLeaf(l.T, node, keys[0], keys[1])
 	nodeR := newLeaf(l.T, node, keys[1], keys[2])
 	node.setChildren(nodeL, nodeR)
@@ -88,6 +93,8 @@ func (l *leaf) Tree() *Tree {
 	return l.T
 }
 
+// Values returns the values in the leaf for a
+// certain state
 func (l *leaf) Values(state int) []int {
 	dct := readFromFile(l.f)
 	return dct[state]

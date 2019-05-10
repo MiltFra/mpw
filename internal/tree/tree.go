@@ -56,14 +56,14 @@ func Load(n int, d string) *Tree {
 		}
 	}
 	t := &Tree{nil, defaultMaxK, d}
-	b := internal.GetPower(n) + 1
 	var root node
 	if len(keys) == 1 {
+		b := internal.GetPower(n) + 1
 		root = newLeaf(t, nil, 0, b)
 	} else {
 		root = newInner(t, 0, 0, 0)
+		root.SetKeys(keys)
 	}
-	root.SetKeys(keys)
 	t.root = root
 	return t
 }
@@ -91,4 +91,10 @@ func (t *Tree) Insert(v map[int][]int) {
 	wg.Add(1)
 	t.root.Insert(v, wg)
 	wg.Wait()
+}
+
+// Values returns the slice with the values of a certain
+// state.
+func (t *Tree) Values(state int) []int {
+	return t.root.Values(state)
 }

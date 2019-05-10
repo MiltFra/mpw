@@ -32,6 +32,11 @@ func main() {
 	flagsGenerate.IntVar(&cores, "cores", runtime.NumCPU(), "How many cores should the program use?")
 	flagsGenerate.IntVar(&l0, "l", 0, "What is the MINIMUM length of the desired words?")
 	flagsGenerate.IntVar(&l1, "L", 1<<31, "What is the MAXIMUM length of the desired words?")
+	flagsGenerate.IntVar(&count, "c", 10, "How many words should be generated?")
+	if len(os.Args) < 2 {
+		fmt.Println("Command expected. ('analyze' or 'generate')")
+		return
+	}
 	switch os.Args[1] {
 	case "analyze":
 		analyze()
@@ -50,15 +55,16 @@ func analyze() {
 		return
 	}
 	// Setting config
-	out.Level = verbosity
+	out.Level = 0
+	fmt.Printf("Setting verbosity to %v\n", verbosity)
 	runtime.GOMAXPROCS(cores)
 	// Analyzing
 	chain.Analyze(file, n, buffer)
 }
 
 func generate() {
-	flagsAnalyze.Parse(os.Args[2:])
-	file := flagsAnalyze.Arg(0)
+	flagsGenerate.Parse(os.Args[2:])
+	file := flagsGenerate.Arg(0)
 	// Running the program
 	// Checking for errors
 	if _, err := os.Stat(file); os.IsNotExist(err) {
