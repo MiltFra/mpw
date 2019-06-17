@@ -32,11 +32,13 @@ var defaultMaxK = 100000
 // a depth and a directory
 func New(n int, d string) *Tree {
 	internal.ResetDir(d)
-	a := 0
-	b := internal.GetPower(n) + 1
 	t := &Tree{nil, defaultMaxK, d}
-	r := newLeaf(t, nil, a, b)
-	t.root = r
+	t.root = newLeaf(
+		t,                      // parent tree
+		nil,                    // root
+		0,                      // a
+		internal.GetPower(n)+1, // b
+	)
 	return t
 }
 
