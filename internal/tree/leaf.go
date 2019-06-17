@@ -29,6 +29,9 @@ func newLeaf(t *Tree, n *inner, keys ...int) *leaf {
 	return &leaf{t, n, [2]int{keys[0], keys[1]}, p}
 }
 
+// Insert adds values from a map into this leaf. If the key count
+// exceeds the cap, the leaf is split into two and replaced by an inner
+// node.
 func (l *leaf) Insert(v map[int][]int, wg *sync.WaitGroup) node {
 	defer wg.Done()
 	contents := addMaps(v, readFromFile(l.f))
