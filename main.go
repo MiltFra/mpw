@@ -11,8 +11,8 @@ import (
 )
 
 var (
-	flagsAnalyze  = flag.NewFlagSet("analyze", flag.ContinueOnError)
-	flagsGenerate = flag.NewFlagSet("generate", flag.ContinueOnError)
+	flagsAnalyze  = flag.NewFlagSet("analyze", flag.ExitOnError)
+	flagsGenerate = flag.NewFlagSet("generate", flag.ExitOnError)
 	verbosity     int
 	cores         int
 	buffer        int
