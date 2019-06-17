@@ -31,9 +31,9 @@ func (in *inner) setChildren(l, r node) {
 func (in *inner) Insert(v map[int][]int, wg *sync.WaitGroup) node {
 	defer wg.Done()
 	x, y := splitMap(in.keys[1], v)
-	wg.Add(2)
+	wg.Add(1)
 	go in.l.Insert(x, wg)
-	go in.r.Insert(y, wg)
+	in.r.Insert(y, wg)
 	return in
 }
 
