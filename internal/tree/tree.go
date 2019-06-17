@@ -42,12 +42,13 @@ func New(n int, d string) *Tree {
 	return t
 }
 
-// Load returns a pointer to a new Tree object base
-// on a directory structure.
+// Load returns a pointer to a new Tree object based
+// on an existing directory structure.
 func Load(n int, d string) *Tree {
 	files, err := ioutil.ReadDir(d)
 	if err != nil {
 		out.Error("Could not read directory. (" + d + ")")
+		panic(err)
 	}
 	keys := make([][]int, 0, len(files))
 	var k []int
