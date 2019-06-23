@@ -71,6 +71,8 @@ func Load(n int, d string) *Tree {
 	return t
 }
 
+// parseFile returns the two interval borders from
+// a given leaf file name.
 func parseFile(f string) []int {
 	s := strings.Split(f, "_")
 	if len(s) != 2 {
