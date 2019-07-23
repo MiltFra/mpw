@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/miltfra/markov/internal"
-	"github.com/miltfra/markov/internal/out"
+	"github.com/miltfra/mpw/internal"
+	"github.com/miltfra/mpw/internal/out"
 )
 
 // Analyze reads a file and returns a chain which contains

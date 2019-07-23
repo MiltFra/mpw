@@ -3,7 +3,7 @@ package tree
 import (
 	"sync"
 
-	"github.com/miltfra/markov/internal/out"
+	"github.com/miltfra/mpw/internal/out"
 )
 
 // innerNode is a part of a Tree that is not a Leaf.

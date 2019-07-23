@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/miltfra/markov/internal"
+	"github.com/miltfra/mpw/internal"
 )
 
 // Generate loads a markov chain and uses the probability

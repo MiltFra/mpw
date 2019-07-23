@@ -6,8 +6,8 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/miltfra/markov/internal/chain"
-	"github.com/miltfra/markov/internal/out"
+	"github.com/miltfra/mpw/internal/chain"
+	"github.com/miltfra/mpw/internal/out"
 )
 
 var (

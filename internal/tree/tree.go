@@ -6,9 +6,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/miltfra/markov/internal/out"
+	"github.com/miltfra/mpw/internal/out"
 
-	"github.com/miltfra/markov/internal"
+	"github.com/miltfra/mpw/internal"
 )
 
 // Tree manages partial maps on the drive to

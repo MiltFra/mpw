@@ -5,7 +5,7 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/miltfra/markov/internal/out"
+	"github.com/miltfra/mpw/internal/out"
 )
 
 // leaf is a node without children

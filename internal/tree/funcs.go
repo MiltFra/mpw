@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/miltfra/markov/internal/out"
+	"github.com/miltfra/mpw/internal/out"
 )
 
 // dictPath returns a path corresponding to a given pair of keys

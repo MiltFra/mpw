@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/miltfra/markov/internal/out"
-	"github.com/miltfra/markov/internal/tree"
+	"github.com/miltfra/mpw/internal/out"
+	"github.com/miltfra/mpw/internal/tree"
 )
 
 // Chain contains probabilites of transitions

@@ -4,12 +4,12 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/miltfra/markov/internal"
+	"github.com/miltfra/mpw/internal"
 )
 
 func TestInsert(t *testing.T) {
 	runtime.GOMAXPROCS(8)
-	tr := New(70, "/home/miltfra/go/src/github.com/miltfra/markov/test/testinsert-mc")
+	tr := New(70, "/home/miltfra/go/src/github.com/miltfra/mpw/test/testinsert-mc")
 	p := internal.GetPower(2)
 	for i := 0; i < 50; i++ {
 		values := make(map[int][]int)
